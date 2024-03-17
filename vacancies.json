@@ -1,1 +1,68 @@
-[]
+[
+    {
+        "link": "https://spb.hh.ru/vacancy/94684700?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "Не указана",
+        "company": "Ок Софт",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94185217?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "Не указана",
+        "company": "Росбанк: Разработка",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94675017?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "200 000 – 250 000 ₽",
+        "company": "Асеано Технологии",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94218492?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "от 180 000 ₽",
+        "company": "Клаудкомсофтваре",
+        "city": "Санкт-Петербург"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/93565093?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "Не указана",
+        "company": "StormWall™",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94010611?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "Не указана",
+        "company": "Дивлаб",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94293381?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "Не указана",
+        "company": "BLACKHUB GAMES",
+        "city": "Санкт-Петербург"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94821887?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "250 000 – 380 000 ₽",
+        "company": "Валта",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94268155?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "от 70 000 ₽",
+        "company": "ЛИГРЕС",
+        "city": "Санкт-Петербург"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94746134?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "до 180 000 ₽",
+        "company": "Гарпикс",
+        "city": "Москва"
+    },
+    {
+        "link": "https://spb.hh.ru/vacancy/94785305?query=python&hhtmFrom=vacancy_search_list",
+        "salary": "Не указана",
+        "company": "Homestretch AG",
+        "city": "Москва"
+    }
+]

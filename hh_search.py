@@ -1,51 +1,75 @@
-from selenium.webdriver import Chrome
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
+import requests
+import re
 import json
+from bs4 import BeautifulSoup
+from fake_headers import Headers
 
 
-def wait_element(browser, delay_seconds=1, by=By.TAG_NAME, value=None):
-    return WebDriverWait(browser, delay_seconds).until(
-        expected_conditions.presence_of_element_located((by, value))
-    )
+
+headers_generator = Headers(os="win", browser="firefox")
+BASE_URL = 'https://spb.hh.ru/search/vacancy?text=python&area=1&area=2'
+job_openings = []
+count_clicks = 0
+count_true = 0
+count_false = 0
+
+for i in range(0, 5):
+    response = requests.get(f'{BASE_URL}&page={i}', headers=headers_generator.generate())
+    main_html_data = response.text
+    soup = BeautifulSoup(main_html_data, 'lxml')
+    vacancies = soup.find_all('div', class_='serp-item')
+
+    for vacancy in vacancies:
+        count_clicks += 1
+        link = vacancy.find('a', class_='bloko-link')
+        link_relative = link['href']
+
+        salary = vacancy.find('span', class_='bloko-header-section-2')
+        if salary:
+            salary = salary.text.strip().replace('\u202F', ' ')
+        else:
+            salary = 'Не указана'
+
+        company = vacancy.find('div', class_='vacancy-serp-item__meta-info-company')
+        if company:
+            company = company.text.strip().replace('ООО\xa0', '')
+        else:
+            company = 'Не указана'
+
+        city = vacancy.find('div', class_='vacancy-serp-item-company')
+        if city:
+            pattern = 'Москва|Санкт-Петербург'
+            city = re.findall(pattern, city.text)
+            if city:
+                city = city[0]
+        else:
+            city = 'Не указан'
+
+        response = requests.get(f'{link_relative}', headers=headers_generator.generate())
+        main_html_data = response.text
+        soup = BeautifulSoup(main_html_data, 'lxml')
+        description_tag = soup.find('div', class_='bloko-tag-list')
+        if description_tag:
+            description_tags = description_tag.find_all('span', class_='bloko-tag__section bloko-tag__section_text')
+            description_list = []
+            for tag in description_tags:
+                description = tag.text.lower()
+                description_list.append(description)
+
+            if 'django' in description_list or 'flask' in description_list:
+                job_openings.append({
+                    'link': link_relative,
+                    'salary': salary,
+                    'company': company,
+                    'city': city,
+                })
+                count_true += 1
+            else:
+                count_false += 1
+
+with open('vacancies.json', 'w', encoding='utf-8') as file:
+    json.dump(job_openings, file, ensure_ascii=False, indent=4)
 
 
-chrome_webdriver_path = ChromeDriverManager().install()
-browser_service = Service(executable_path=chrome_webdriver_path)
-options = Options()
-options.add_argument("--headless")
-browser = Chrome(service=browser_service, options=options)
-
-
-browser.get("https://spb.hh.ru/search/vacancy?text=python&area=1&area=2")
-browser.maximize_window()
-
-vacancy_list = wait_element(browser, 1, By.XPATH, '//*[@id="a11y-main-content"]')
-vacancyes = vacancy_list.find_elements(By.TAG_NAME, 'serp-item vacancy-serp-item_clickme serp-item_link')
-vacancies = []
-
-for vacancy_element in vacancyes:
-    vacancy_link = wait_element(vacancy_element, 1, By.TAG_NAME, "a").get_attribute("href")
-    vacancy_title = wait_element(vacancy_element, 1, By.CLASS_NAME, "vacancy-serp-item__title").text
-    vacancy_company = wait_element(vacancy_element, 1, By.CLASS_NAME, "vacancy-serp-item__meta-info").text
-    vacancy_salary = wait_element(vacancy_element, 1, By.CLASS_NAME, "vacancy-serp-item__compensation").text
-    vacancy_description = wait_element(vacancy_element, 1, By.XPATH, '//span[@data-qa="bloko-tag__text"]').text
-
-    if "Django" in vacancy_description or "Flask" in vacancy_description:
-        vacancy = {
-            "link": vacancy_link,
-            "title": vacancy_title,
-            "company": vacancy_company,
-            "salary": vacancy_salary,
-        }
-        vacancies.append(vacancy)
-
-with open("vacancies.json", "w") as f:
-    json.dump(vacancies, f, indent=4)
-
-
-browser.close()
+print(f'Подходящих вакансий записано: {count_true}')
+print(f'Вакансий отсеяно: {count_false}')
